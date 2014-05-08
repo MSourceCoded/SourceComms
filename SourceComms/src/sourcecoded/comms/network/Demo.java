@@ -8,9 +8,9 @@ import sourcecoded.comms.network.packets.Pkt0x00Ping;
 import sourcecoded.comms.socket.SourceCommsClient;
 import sourcecoded.comms.socket.SourceCommsServer;
 
-public class Main {
+public class Demo {
 	public static void main(String[] args) throws InterruptedException {
-		EventBus.Registry.register(Main.class);
+		EventBus.Registry.register(Demo.class);
 		EventBus.Registry.register(ErrorHandler.class);
 		
 		SourceCommsServer.instance().setData(1337);
