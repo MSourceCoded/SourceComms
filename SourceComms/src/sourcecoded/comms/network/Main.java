@@ -32,5 +32,6 @@ public class Main {
 	
 	@SourceCommsEvent
 	public void onPacketHandled(EventPacketHandled e) {
+		System.err.println("Pkt Received");
 	}
 }
