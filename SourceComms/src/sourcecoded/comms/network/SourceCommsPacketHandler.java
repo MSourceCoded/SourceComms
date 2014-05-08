@@ -9,6 +9,7 @@ import sourcecoded.comms.eventsystem.event.EventPacketHandled;
 import sourcecoded.comms.network.packets.ISourceCommsPacket;
 import sourcecoded.comms.network.packets.Pkt0x00Ping;
 import sourcecoded.comms.network.packets.Pkt1x00Player;
+import sourcecoded.comms.network.packets.Pkt1x01NBT;
 
 public enum SourceCommsPacketHandler {
 	INSTANCE;
@@ -24,6 +25,7 @@ public enum SourceCommsPacketHandler {
 		public MineDroidPacketCodec() {
 			addDiscriminator(0, Pkt0x00Ping.class);
 			addDiscriminator(10, Pkt1x00Player.class);
+			addDiscriminator(11, Pkt1x01NBT.class);
 		}
 
 		@Override
