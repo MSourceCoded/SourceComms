@@ -14,15 +14,15 @@ import sourcecoded.comms.network.packets.Pkt1x01NBT;
 public enum SourceCommsPacketHandler {
 	INSTANCE;
 
-	MineDroidPacketCodec codec;
+	SourceCommsPacketCodec codec;
 
 	private SourceCommsPacketHandler() {
-		codec = new MineDroidPacketCodec();
+		codec = new SourceCommsPacketCodec();
 	}
 
-	public class MineDroidPacketCodec extends PacketCodec<ISourceCommsPacket> {
+	public class SourceCommsPacketCodec extends PacketCodec<ISourceCommsPacket> {
 
-		public MineDroidPacketCodec() {
+		public SourceCommsPacketCodec() {
 			addDiscriminator(0, Pkt0x00Ping.class);
 			addDiscriminator(10, Pkt1x00Player.class);
 			addDiscriminator(11, Pkt1x01NBT.class);

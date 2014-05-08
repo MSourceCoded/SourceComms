@@ -11,7 +11,6 @@ import sourcecoded.comms.socket.SourceCommsServer;
 public class Demo {
 	public static void main(String[] args) throws InterruptedException {
 		EventBus.Registry.register(Demo.class);
-		EventBus.Registry.register(ErrorHandler.class);
 		
 		SourceCommsServer.instance().setData(1337);
 		SourceCommsServer.instance().open();
@@ -24,9 +23,11 @@ public class Demo {
 		SourceCommsClient.instance().listen();
 		
 		
-		Pkt0x00Ping packet = new Pkt0x00Ping();
-		SourceCommsServer.instance().sendToClient(packet);
-		SourceCommsClient.instance().sendToServer(packet);
+		Pkt0x00Ping packetC = new Pkt0x00Ping();
+		SourceCommsServer.instance().sendToClient(packetC);
+		Thread.sleep(1000);
+		Pkt0x00Ping packetS = new Pkt0x00Ping();
+		SourceCommsClient.instance().sendToServer(packetS);
 		
 	}
 	
