@@ -23,6 +23,9 @@ Documentation
   * **EventClientClosed / EventServerClosed**
     * These events are sent whenever a server/client is closed, usually with an error. Each of these has different variables, I recommend you check the class for more details.
 
+  * **EventClientReady / EventServerReady**
+    * These events are sent whenever a server/client is ready and connected. It is recommended you wait for these events to trigger before listening for or sending packets. Calling listen() on a server or client will wait 5 seconds (1 of 20 retries every 250ms) for the server/client to become ready, however this is not preferred.
+
   In order to listen for an event, simply apply the @SourceCommsEvent annotation to any method with a single parameter of the Event.
   e.g.
     ```java
