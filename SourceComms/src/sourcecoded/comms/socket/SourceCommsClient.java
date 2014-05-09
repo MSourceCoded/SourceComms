@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 import sourcecoded.comms.eventsystem.EventBus;
 import sourcecoded.comms.eventsystem.event.EventClientClosed;
+import sourcecoded.comms.eventsystem.event.EventClientReady;
 import sourcecoded.comms.exception.ErrorCodes;
 import sourcecoded.comms.network.SourceCommsPacketHandler;
 import sourcecoded.comms.network.PacketCodec;
@@ -60,6 +61,7 @@ public class SourceCommsClient {
 			outToServer = new DataOutputStream(client.getOutputStream());
 			
 			isReady = true;
+			EventBus.Publisher.raiseEvent(new EventClientReady());
 		} catch (UnknownHostException e) {
 			EventBus.Publisher.raiseEvent(new EventClientClosed(hostPort, host, ErrorCodes.UNKNOWN_HOST, "Unknown Hostname"));
 			e.printStackTrace();
@@ -76,6 +78,25 @@ public class SourceCommsClient {
 		listener = new Thread(new Runnable() {
 			@Override
 			public void run() {
+				int counter = 0;
+				try {
+					while (!isReady && isListening) {
+						counter++;
+						if (counter < 20) {
+							System.err.println("Client not ready, retrying " + counter + " of 20");
+							Thread.sleep(50);
+						} else {
+							counter = 0;
+							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from client data streams");
+							return;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					closeWithError(ErrorCodes.UNKNOWN, "An unknown error occurred");
+
+				}
+				
 				while (isListening && isReady) {
 					if (client != null && inFromServer != null && !client.isClosed()) {
 						try {

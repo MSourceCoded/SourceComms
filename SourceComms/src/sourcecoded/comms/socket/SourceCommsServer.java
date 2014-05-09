@@ -9,9 +9,10 @@ import java.net.Socket;
 
 import sourcecoded.comms.eventsystem.EventBus;
 import sourcecoded.comms.eventsystem.event.EventServerClosed;
+import sourcecoded.comms.eventsystem.event.EventServerReady;
 import sourcecoded.comms.exception.ErrorCodes;
-import sourcecoded.comms.network.SourceCommsPacketHandler;
 import sourcecoded.comms.network.PacketCodec;
+import sourcecoded.comms.network.SourceCommsPacketHandler;
 import sourcecoded.comms.network.packets.ISourceCommsPacket;
 
 public class SourceCommsServer {
@@ -63,6 +64,7 @@ public class SourceCommsServer {
 					outToClient = new DataOutputStream(theClient.getOutputStream());
 
 					isReady = true;
+					EventBus.Publisher.raiseEvent(new EventServerReady());
 				} catch (BindException e) {
 					closeWithError(ErrorCodes.PORT_USED, "This port is already in use");
 					return;
@@ -93,7 +95,7 @@ public class SourceCommsServer {
 							Thread.sleep(50);
 						} else {
 							counter = 0;
-							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from client data streams");
+							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from server data streams");
 							return;
 						}
 					}
