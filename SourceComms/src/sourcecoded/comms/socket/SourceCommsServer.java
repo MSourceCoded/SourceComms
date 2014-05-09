@@ -92,7 +92,7 @@ public class SourceCommsServer {
 						counter++;
 						if (counter < 20) {
 							System.err.println("Server not ready, retrying " + counter + " of 20");
-							Thread.sleep(50);
+							Thread.sleep(250);
 						} else {
 							counter = 0;
 							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from server data streams");

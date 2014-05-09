@@ -84,7 +84,7 @@ public class SourceCommsClient {
 						counter++;
 						if (counter < 20) {
 							System.err.println("Client not ready, retrying " + counter + " of 20");
-							Thread.sleep(50);
+							Thread.sleep(250);
 						} else {
 							counter = 0;
 							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from client data streams");
