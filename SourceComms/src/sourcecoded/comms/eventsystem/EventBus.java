@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import sourcecoded.comms.exception.ErrorHandler;
-
 public class EventBus {
 
 	public static class Registry {

@@ -6,13 +6,13 @@ import java.io.IOException;
 
 import sourcecoded.comms.network.SourceCommsPacketHandler;
 
-public class Pkt1x01NBT implements ISourceCommsPacket {
+public class Pkt1x01NBTString implements ISourceCommsPacket {
 
 	public String theTags;
 	
 	//Temporary until I can get around to handling NBT in HashMap form
-	public Pkt1x01NBT() {}
-	public Pkt1x01NBT(String tags) {
+	public Pkt1x01NBTString() {}
+	public Pkt1x01NBTString(String tags) {
 		this.theTags = tags;
 	}
 	
