@@ -10,6 +10,8 @@ Documentation
 ### Packets
   By default SourceComms comes with a few packets. You can create a new packet by calling ```new PacketName();```. To send a packet from the client to the server, call ```SourceCommsClient.instance().sendPacketToServer();```. To send a packet from the server to the client, call ```SourceCommsServer.instance().sendPacketToClient();```
   
+  **NOTE:** I would recommed waiting for the EventServerReady or EventClientReady events before sending these packets, it will make the program a lot more efficient and eliminate the small chance of packet-sending failure
+  
   To Create your own packet, create a new class and make it implement ISourceCommsPacket. Use reference from the stock packets to get an idea of how to handle encodes, decodes, etc. Next open SourceCommsPacketHandler and go to the ```SourceCommsPacketCodec``` subclass. In the constructor, call ```addDiscriminator(id, packetclass)``` and that should be all you need to do.
 
 ### Events
@@ -20,6 +22,9 @@ Documentation
   
   * **EventClientClosed / EventServerClosed**
     * These events are sent whenever a server/client is closed, usually with an error. Each of these has different variables, I recommend you check the class for more details.
+
+  * **EventClientReady / EventServerReady**
+    * These events are sent whenever a server/client is ready and connected. It is recommended you wait for these events to trigger before listening for or sending packets. Calling listen() on a server or client will wait 5 seconds (1 of 20 retries every 250ms) for the server/client to become ready, however this is not preferred.
 
   In order to listen for an event, simply apply the @SourceCommsEvent annotation to any method with a single parameter of the Event.
   e.g.
