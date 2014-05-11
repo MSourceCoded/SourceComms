@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Pkt0x00Ping implements ISourceCommsPacket {
 
-	long OnEncode, OnDecode;
+	public long OnEncode, OnDecode, diff;
 	
 	public Pkt0x00Ping() {
 		OnEncode = System.currentTimeMillis();
@@ -25,7 +25,8 @@ public class Pkt0x00Ping implements ISourceCommsPacket {
 
 	@Override
 	public void executeAfter() {
-		System.err.println("Delay = " + (OnDecode - OnEncode) + "ms");
+		diff = OnDecode - OnEncode;
+		System.err.println("Delay = " + diff + "ms");
 	}
 
 }
