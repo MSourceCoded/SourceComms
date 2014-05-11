@@ -10,6 +10,7 @@ public class Pkt0x01PingReply implements ISourceCommsPacket {
 
 	public long OnEncode, OnDecode, diff, diffMS;
 	
+	public Pkt0x01PingReply() {}
 	public Pkt0x01PingReply(long encode) {
 		this.OnEncode = encode;
 	}
@@ -28,7 +29,7 @@ public class Pkt0x01PingReply implements ISourceCommsPacket {
 	@Override
 	public void executeAfter(SCSide side) {
 		diff = OnDecode - OnEncode;
-		diffMS = diff / 10^6;
+		diffMS = diff / 1000000L;
 	}
 
 	

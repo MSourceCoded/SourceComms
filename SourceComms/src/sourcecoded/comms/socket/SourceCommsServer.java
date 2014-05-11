@@ -28,7 +28,8 @@ public class SourceCommsServer {
 
 	private boolean isListening = false;
 	private boolean isReady = false;
-
+	private boolean isConnected = false;
+	
 	private static SourceCommsServer instance;
 	private SourceCommsServer() {	}
 
@@ -65,6 +66,7 @@ public class SourceCommsServer {
 					outToClient = new DataOutputStream(theClient.getOutputStream());
 
 					isReady = true;
+					isConnected = true;
 					EventBus.Publisher.raiseEvent(new EventServerReady());
 				} catch (BindException e) {
 					closeWithError(ErrorCodes.PORT_USED, "This port is already in use");
@@ -144,6 +146,7 @@ public class SourceCommsServer {
 	 */
 	public void close() {
 		isListening = false;
+		isConnected = false;
 		try {
 			inFromClient.close();
 			outToClient.close();
@@ -171,6 +174,14 @@ public class SourceCommsServer {
 		return isListening;
 	}
 
+	/**
+	 * Get the connection state of the server
+	 * @return connection state
+	 */
+	public boolean isConnected() {
+		return isConnected;
+	}
+	
 	/**
 	 * Sets the listening state of the server. Will stop the listen() thread.
 	 * @param listen The listening state to set

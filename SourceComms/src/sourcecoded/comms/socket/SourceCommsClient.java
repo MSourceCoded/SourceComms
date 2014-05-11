@@ -10,9 +10,9 @@ import sourcecoded.comms.eventsystem.EventBus;
 import sourcecoded.comms.eventsystem.event.EventClientClosed;
 import sourcecoded.comms.eventsystem.event.EventClientReady;
 import sourcecoded.comms.exception.ErrorCodes;
+import sourcecoded.comms.network.PacketCodec;
 import sourcecoded.comms.network.SCSide;
 import sourcecoded.comms.network.SourceCommsPacketHandler;
-import sourcecoded.comms.network.PacketCodec;
 import sourcecoded.comms.network.packets.ISourceCommsPacket;
 
 public class SourceCommsClient {
@@ -26,7 +26,8 @@ public class SourceCommsClient {
 
 	private boolean isListening = false;
 	private boolean isReady = false;
-
+	private boolean isConnected = false;
+	
 	private static SourceCommsClient instance;
 
 	private SourceCommsClient() {
@@ -72,6 +73,7 @@ public class SourceCommsClient {
 					outToServer = new DataOutputStream(client.getOutputStream());
 
 					isReady = true;
+					isConnected = true;
 					EventBus.Publisher.raiseEvent(new EventClientReady());
 				} catch (UnknownHostException e) {
 					EventBus.Publisher.raiseEvent(new EventClientClosed(
@@ -160,6 +162,7 @@ public class SourceCommsClient {
 	 */
 	public void close() {
 		isListening = false;
+		isConnected = false;
 		try {
 			inFromServer.close();
 			outToServer.close();
@@ -191,6 +194,14 @@ public class SourceCommsClient {
 		return isListening;
 	}
 
+	/**
+	 * Get the connection state of the server
+	 * @return connection state
+	 */
+	public boolean isConnected() {
+		return isConnected;
+	}
+	
 	/**
 	 * Sets the listening state of the server. Will stop the listen() thread.
 	 * 
