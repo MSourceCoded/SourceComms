@@ -27,10 +27,13 @@ public class SourceCommsClient {
 	private boolean isReady = false;
 
 	private static SourceCommsClient instance;
-	private SourceCommsClient() {	}
+
+	private SourceCommsClient() {
+	}
 
 	/**
 	 * Get (and set) the client instance
+	 * 
 	 * @return
 	 */
 	public static SourceCommsClient instance() {
@@ -41,7 +44,8 @@ public class SourceCommsClient {
 
 	/**
 	 * Set the hostname and port of the server
-	 * @param hostname 
+	 * 
+	 * @param hostname
 	 * @param port
 	 */
 	public void setData(String hostname, int port) {
@@ -51,24 +55,37 @@ public class SourceCommsClient {
 
 	/**
 	 * Connect to the server.
-	 * @throws UnknownHostException	The server was not found
-	 * @throws IOException DataStream error
+	 * 
+	 * @throws UnknownHostException
+	 *             The server was not found
+	 * @throws IOException
+	 *             DataStream error
 	 */
 	public void connect() {
-		try {
-			client = new Socket(host, hostPort);
-			inFromServer = new DataInputStream(client.getInputStream());
-			outToServer = new DataOutputStream(client.getOutputStream());
-			
-			isReady = true;
-			EventBus.Publisher.raiseEvent(new EventClientReady());
-		} catch (UnknownHostException e) {
-			EventBus.Publisher.raiseEvent(new EventClientClosed(hostPort, host, ErrorCodes.UNKNOWN_HOST, "Unknown Hostname"));
-			e.printStackTrace();
-		} catch (IOException e) {
-			closeWithError(ErrorCodes.STREAM_EXCEPTION, "Could not connect to server data streams");
-			e.printStackTrace();
-		}
+		Thread clientOpen = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					client = new Socket(host, hostPort);
+					inFromServer = new DataInputStream(client.getInputStream());
+					outToServer = new DataOutputStream(client.getOutputStream());
+
+					isReady = true;
+					EventBus.Publisher.raiseEvent(new EventClientReady());
+				} catch (UnknownHostException e) {
+					EventBus.Publisher.raiseEvent(new EventClientClosed(
+							hostPort, host, ErrorCodes.UNKNOWN_HOST,
+							"Unknown Hostname"));
+					e.printStackTrace();
+				} catch (IOException e) {
+					closeWithError(ErrorCodes.STREAM_EXCEPTION,
+							"Could not connect to server data streams");
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		clientOpen.start();
 	}
 
 	/**
@@ -83,35 +100,42 @@ public class SourceCommsClient {
 					while (!isReady && isListening) {
 						counter++;
 						if (counter < 20) {
-							System.err.println("Client not ready, retrying " + counter + " of 20");
+							System.err.println("Client not ready, retrying "
+									+ counter + " of 20");
 							Thread.sleep(250);
 						} else {
 							counter = 0;
-							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from client data streams");
+							closeWithError(ErrorCodes.STREAM_READ_FAIL,
+									"Could not read from client data streams");
 							return;
 						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					closeWithError(ErrorCodes.UNKNOWN, "An unknown error occurred");
+					closeWithError(ErrorCodes.UNKNOWN,
+							"An unknown error occurred");
 
 				}
-				
+
 				while (isListening && isReady) {
-					if (client != null && inFromServer != null && !client.isClosed()) {
+					if (client != null && inFromServer != null
+							&& !client.isClosed()) {
 						try {
 							if (inFromServer.readInt() == PacketCodec.START_OF_MESSAGE) {
-								//Read the thing
+								// Read the thing
 								int discriminator = inFromServer.readInt();
-								SourceCommsPacketHandler.INSTANCE.matchPacket(discriminator, inFromServer);
-							} 
+								SourceCommsPacketHandler.INSTANCE.matchPacket(
+										discriminator, inFromServer);
+							}
 						} catch (IOException e) {
 							e.printStackTrace();
-							//Close the client
-							closeWithError(ErrorCodes.STREAM_READ_FAIL, "Could not read from server data streams");
+							// Close the client
+							closeWithError(ErrorCodes.STREAM_READ_FAIL,
+									"Could not read from server data streams");
 						}
 					} else if (client.isClosed()) {
-						closeWithError(ErrorCodes.STREAM_READ_FAIL, "End of stream");
+						closeWithError(ErrorCodes.STREAM_READ_FAIL,
+								"End of stream");
 					}
 				}
 			}
@@ -119,10 +143,11 @@ public class SourceCommsClient {
 		listener.start();
 	}
 
-
 	/**
-	 * Send a packet to the server from the client. 
-	 * @param packet The packet to be sent
+	 * Send a packet to the server from the client.
+	 * 
+	 * @param packet
+	 *            The packet to be sent
 	 */
 	public void sendToServer(ISourceCommsPacket packet) {
 		if (client != null && outToServer != null && !client.isClosed())
@@ -141,19 +166,24 @@ public class SourceCommsClient {
 		} catch (Exception e) {
 		}
 	}
-	
+
 	/**
 	 * Close the client on error
-	 * @param code The Error Code
-	 * @param reason The Reason for the close
+	 * 
+	 * @param code
+	 *            The Error Code
+	 * @param reason
+	 *            The Reason for the close
 	 */
 	public void closeWithError(int code, String reason) {
-		EventBus.Publisher.raiseEvent(new EventClientClosed(hostPort, host, code, reason));
+		EventBus.Publisher.raiseEvent(new EventClientClosed(hostPort, host,
+				code, reason));
 		close();
 	}
-	
+
 	/**
 	 * Get the listening state of the server
+	 * 
 	 * @return listening state
 	 */
 	public boolean isListening() {
@@ -162,7 +192,9 @@ public class SourceCommsClient {
 
 	/**
 	 * Sets the listening state of the server. Will stop the listen() thread.
-	 * @param listen The listening state to set
+	 * 
+	 * @param listen
+	 *            The listening state to set
 	 */
 	public void setListeningState(boolean listen) {
 		isListening = listen;
