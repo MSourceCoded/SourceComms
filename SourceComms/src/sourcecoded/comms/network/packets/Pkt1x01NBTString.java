@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import sourcecoded.comms.network.SCSide;
 import sourcecoded.comms.network.SourceCommsPacketHandler;
 
 public class Pkt1x01NBTString implements ISourceCommsPacket {
@@ -25,9 +26,9 @@ public class Pkt1x01NBTString implements ISourceCommsPacket {
 	public void decode(DataInputStream data) throws IOException {
 		theTags = SourceCommsPacketHandler.INSTANCE.readString(data);
 	}
-
+	
 	@Override
-	public void executeAfter() {
+	public void executeAfter(SCSide side) {
 		
 	}
 

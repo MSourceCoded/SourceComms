@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import sourcecoded.comms.network.SCSide;
+
 public interface ISourceCommsPacket {
 	
 	/**
@@ -19,10 +21,11 @@ public interface ISourceCommsPacket {
 	 * @throws IOException Something happened that wasn't meant to
 	 */
 	public void decode(DataInputStream data) throws IOException;
-	
+
 	/**
-	 * Executed after the packet is received and decoded. Essentially a shorcut instead of using EventPacketHandled
+	 * Executed after the packet is received
+	 * @param side The side the packet was sent from
 	 */
-	public void executeAfter();
+	public void executeAfter(SCSide side);
 	
 }

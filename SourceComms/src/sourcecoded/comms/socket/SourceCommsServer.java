@@ -12,6 +12,7 @@ import sourcecoded.comms.eventsystem.event.EventServerClosed;
 import sourcecoded.comms.eventsystem.event.EventServerReady;
 import sourcecoded.comms.exception.ErrorCodes;
 import sourcecoded.comms.network.PacketCodec;
+import sourcecoded.comms.network.SCSide;
 import sourcecoded.comms.network.SourceCommsPacketHandler;
 import sourcecoded.comms.network.packets.ISourceCommsPacket;
 
@@ -135,7 +136,7 @@ public class SourceCommsServer {
 	 */
 	public void sendToClient(ISourceCommsPacket packet) {
 		if (theClient != null && outToClient != null && !server.isClosed())
-			SourceCommsPacketHandler.INSTANCE.send(packet, outToClient);
+			SourceCommsPacketHandler.INSTANCE.send(packet, outToClient, SCSide.Server);
 	}
 
 	/**

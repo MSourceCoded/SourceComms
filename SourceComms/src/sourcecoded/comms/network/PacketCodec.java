@@ -30,16 +30,18 @@ public abstract class PacketCodec<PacketType extends ISourceCommsPacket> {
 	public abstract void encode(PacketType packet, DataOutputStream serverStream) throws IOException;
 	
 	@SuppressWarnings("unchecked")
-	public void encodeInto(PacketType packet, DataOutputStream serverStream) throws IOException {
+	public void encodeInto(PacketType packet, DataOutputStream serverStream, SCSide writeSide) throws IOException {
 		serverStream.writeInt(START_OF_MESSAGE);
+		serverStream.writeInt(writeSide.ordinal());
 		int disc = getDiscriminator((Class<? extends PacketType>) packet.getClass());
 		serverStream.writeInt(disc);
 		encode(packet, serverStream);
 	}
 	
-	public abstract void decode(PacketType packet, DataInputStream stream) throws IOException;
+	public abstract void decode(PacketType packet, DataInputStream stream, SCSide side) throws IOException;
 	
 	public void decodeInto(PacketType packet, DataInputStream stream) throws IOException {
-		decode(packet, stream);
+		SCSide side = SCSide.values()[stream.readInt()];
+		decode(packet, stream, side);
 	}
 }

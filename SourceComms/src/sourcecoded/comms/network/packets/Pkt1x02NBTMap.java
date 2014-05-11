@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import sourcecoded.comms.network.SCSide;
+
 @SuppressWarnings("rawtypes")	//We do things differently around here, boy
 public class Pkt1x02NBTMap implements ISourceCommsPacket {
 
@@ -35,7 +37,7 @@ public class Pkt1x02NBTMap implements ISourceCommsPacket {
 	}
 	
 	@Override
-	public void executeAfter() {
+	public void executeAfter(SCSide side) {
 		
 	}
 	

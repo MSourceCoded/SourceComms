@@ -4,16 +4,18 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Pkt0x00Ping implements ISourceCommsPacket {
+import sourcecoded.comms.network.SCSide;
+
+public class Pkt0x01PingReply implements ISourceCommsPacket {
 
 	public long OnEncode, OnDecode, diff, diffMS;
 	
-	public Pkt0x00Ping() {
+	public Pkt0x01PingReply(long encode) {
+		this.OnEncode = encode;
 	}
 	
 	@Override
 	public void encode(DataOutputStream data) throws IOException {
-		OnEncode = System.nanoTime();
 		data.writeLong(OnEncode);
 	}
 
@@ -24,10 +26,11 @@ public class Pkt0x00Ping implements ISourceCommsPacket {
 	}
 
 	@Override
-	public void executeAfter() {
+	public void executeAfter(SCSide side) {
 		diff = OnDecode - OnEncode;
-		diffMS = diff / 1000000;
-		System.err.println("Delay = " + diff + "ns");
+		diffMS = diff / 10^6;
 	}
+
+	
 
 }

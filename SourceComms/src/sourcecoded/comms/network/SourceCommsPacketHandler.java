@@ -7,7 +7,8 @@ import java.io.IOException;
 import sourcecoded.comms.eventsystem.EventBus;
 import sourcecoded.comms.eventsystem.event.EventPacketHandled;
 import sourcecoded.comms.network.packets.ISourceCommsPacket;
-import sourcecoded.comms.network.packets.Pkt0x00Ping;
+import sourcecoded.comms.network.packets.Pkt0x00PingRequest;
+import sourcecoded.comms.network.packets.Pkt0x01PingReply;
 import sourcecoded.comms.network.packets.Pkt1x00Player;
 import sourcecoded.comms.network.packets.Pkt1x01NBTString;
 import sourcecoded.comms.network.packets.Pkt1x02NBTMap;
@@ -24,7 +25,8 @@ public enum SourceCommsPacketHandler {
 	public class SourceCommsPacketCodec extends PacketCodec<ISourceCommsPacket> {
 
 		public SourceCommsPacketCodec() {
-			addDiscriminator(0, Pkt0x00Ping.class);
+			addDiscriminator(0, Pkt0x00PingRequest.class);
+			addDiscriminator(1, Pkt0x01PingReply.class);
 			addDiscriminator(10, Pkt1x00Player.class);
 			addDiscriminator(11, Pkt1x01NBTString.class);
 			addDiscriminator(12, Pkt1x02NBTMap.class);
@@ -37,10 +39,10 @@ public enum SourceCommsPacketHandler {
 		}
 
 		@Override
-		public void decode(ISourceCommsPacket packet, DataInputStream stream)
+		public void decode(ISourceCommsPacket packet, DataInputStream stream, SCSide side)
 				throws IOException {
 			packet.decode(stream);
-			packet.executeAfter();
+			packet.executeAfter(side);
 			EventPacketHandled p = new EventPacketHandled(packet);
 			EventBus.Publisher.raiseEvent(p);
 		}
@@ -68,10 +70,11 @@ public enum SourceCommsPacketHandler {
 	 * Send a packet across a DOS. Call this from the Server/Client instead.
 	 * @param thePacket The packet to write
 	 * @param serverStream The stream to write to
+	 * @param writeSide The side the data was written from
 	 */
-	public void send(ISourceCommsPacket thePacket, DataOutputStream serverStream) {
+	public void send(ISourceCommsPacket thePacket, DataOutputStream serverStream, SCSide writeSide) {
 		try {
-			codec.encodeInto(thePacket, serverStream);
+			codec.encodeInto(thePacket, serverStream, writeSide);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

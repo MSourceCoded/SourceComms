@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import sourcecoded.comms.network.SCSide;
 import sourcecoded.comms.network.SourceCommsPacketHandler;
 
 public class Pkt1x00Player implements ISourceCommsPacket{
@@ -35,8 +36,9 @@ public class Pkt1x00Player implements ISourceCommsPacket{
 		this.zPos = data.readInt();
 		this.target = SourceCommsPacketHandler.INSTANCE.readString(data);
 	}
+	
 	@Override
-	public void executeAfter() {
+	public void executeAfter(SCSide side) {
 		
 	}
 }
