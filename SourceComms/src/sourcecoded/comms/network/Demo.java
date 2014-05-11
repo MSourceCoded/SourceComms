@@ -15,16 +15,15 @@ public class Demo {
 	public static void main(String[] args) throws InterruptedException {
 		EventBus.Registry.register(Demo.class);
 		
-		SourceCommsServer.instance().setData(1337);
+		SourceCommsServer.instance().setData(1338);
 		SourceCommsServer.instance().open();
 		SourceCommsServer.instance().setListeningState(true);
 		SourceCommsServer.instance().listen();
 		
-		SourceCommsClient.instance().setData("localhost", 1337);
+		SourceCommsClient.instance().setData("localhost", 1338);
 		SourceCommsClient.instance().connect();
 		SourceCommsClient.instance().setListeningState(true);
 		SourceCommsClient.instance().listen();
-		
 		
 		Pkt0x00Ping packetC = new Pkt0x00Ping();
 		SourceCommsServer.instance().sendToClient(packetC);
@@ -42,5 +41,9 @@ public class Demo {
 	@SourceCommsEvent
 	public void onPacketHandled(EventPacketHandled e) {
 		System.err.println("Pkt Received");
+		if (e.getPacket() instanceof Pkt0x00Ping) {
+			Pkt0x00Ping pi = (Pkt0x00Ping) e.getPacket();
+			System.err.println(pi.diff);
+		}
 	}
 }
