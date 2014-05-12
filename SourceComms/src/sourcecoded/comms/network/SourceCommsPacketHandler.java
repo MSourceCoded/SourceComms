@@ -12,6 +12,7 @@ import sourcecoded.comms.network.packets.Pkt0x01PingReply;
 import sourcecoded.comms.network.packets.Pkt1x00Player;
 import sourcecoded.comms.network.packets.Pkt1x01NBTString;
 import sourcecoded.comms.network.packets.Pkt1x02NBTMap;
+import sourcecoded.comms.network.packets.Pkt1x03NBTCancel;
 
 public enum SourceCommsPacketHandler {
 	INSTANCE;
@@ -30,6 +31,7 @@ public enum SourceCommsPacketHandler {
 			addDiscriminator(10, Pkt1x00Player.class);
 			addDiscriminator(11, Pkt1x01NBTString.class);
 			addDiscriminator(12, Pkt1x02NBTMap.class);
+			addDiscriminator(13, Pkt1x03NBTCancel.class);
 		}
 
 		@Override
